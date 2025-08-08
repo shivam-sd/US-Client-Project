@@ -8,6 +8,7 @@ import Aboutus from "./pages/Aboutus";
 import Contact from "./pages/Contact";
 import EventDetails from "./pages/EventDetails";
 import AdminAccess from "./pages/AdminAccess";
+import EventPostByAdmin from './pages/EventPostByAdmin';
 
 
 const App = () => {
@@ -22,6 +23,7 @@ const App = () => {
         <Route path='/contact' element={<Contact />} />
         <Route path='/eventDetails' element={<EventDetails />} />
         <Route path='/adminaccess' element={<AdminAccess />} />
+        <Route path='/eventpostbyadmin' element={<EventPostByAdmin />} />
       </Routes>
     </div>
   )

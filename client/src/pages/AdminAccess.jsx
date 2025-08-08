@@ -23,15 +23,17 @@ const AdminAccess = () => {
         }
       );
 
-      // console.log("Login response:", response.data);
+      localStorage.setItem("token", response.data.token);
 
+      // console.log("Login response:", response.data);
       toast.success("Login successful!");
+      navigate("/eventpostbyadmin");
     } catch (error) {
-      console.error("Error during admin login:", error);
-      toast.error("Login failed. Please try again.");
+      toast.error("Invalid Credentials. Please try again.");
+      // console.error("Error during admin login:", error);
       setIsSubmitting(false);
       return;
-    }
+    } 
     setTimeout(() => setIsSubmitting(false), 1500);
   };
 
