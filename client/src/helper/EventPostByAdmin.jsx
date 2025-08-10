@@ -3,7 +3,6 @@ import axios from "axios";
 import { toast } from "react-toastify";
 import { useNavigate } from "react-router-dom";
 
-
 const EventPostByAdmin = () => {
   const [image, setImage] = useState(null);
   const [preview, setPreview] = useState(null);
@@ -13,9 +12,12 @@ const EventPostByAdmin = () => {
     location: "",
     date: "",
     time: "",
+    description: "" // Added description field
   });
   const [errors, setErrors] = useState({});
   const fileInputRef = useRef();
+
+  const navigate = useNavigate();
 
   const handleChange = (e) => {
     setForm({ ...form, [e.target.name]: e.target.value });
@@ -41,6 +43,7 @@ const EventPostByAdmin = () => {
     if (!form.location) temp.location = "Location is required";
     if (!form.date) temp.date = "Date is required";
     if (!form.time) temp.time = "Time is required";
+    if (!form.description) temp.description = "Description is required";
     if (!image) temp.image = "Image is required";
     setErrors(temp);
     return Object.keys(temp).length === 0;
@@ -56,6 +59,7 @@ const EventPostByAdmin = () => {
       formData.append("location", form.location);
       formData.append("date", form.date);
       formData.append("time", form.time);
+      formData.append("description", form.description); // Added to FormData
       formData.append("image", image);
 
       const token = localStorage.getItem("token");
@@ -73,16 +77,17 @@ const EventPostByAdmin = () => {
       console.log("Event posted successfully:", response);
       if (response.status === 201) {
         toast.success("Event Posted Successfully!");
-        setForm({ title: "", location: "", date: "", time: "" });
+        setForm({ title: "", location: "", date: "", time: "", description: "" });
         setImage(null);
         setPreview(null);
         if (fileInputRef.current) {
           fileInputRef.current.value = "";
         }
       }
+      navigate("/admindashboard");
       setErrors({});
     } catch (error) {
-      toast.error("Error posting event.");
+      toast.error(error?.response?.data?.error || "Something went wrong!");
       console.error("Error posting event:", error);
     } finally {
       setLoading(false);
@@ -119,6 +124,7 @@ const EventPostByAdmin = () => {
               <span className="text-red-500 text-sm">{errors.title}</span>
             )}
           </div>
+
           {/* Location */}
           <div>
             <label className="block text-gray-700 font-semibold mb-1">
@@ -138,6 +144,7 @@ const EventPostByAdmin = () => {
               <span className="text-red-500 text-sm">{errors.location}</span>
             )}
           </div>
+
           {/* Date & Time */}
           <div className="flex gap-4">
             <div className="flex-1">
@@ -175,6 +182,27 @@ const EventPostByAdmin = () => {
               )}
             </div>
           </div>
+
+          {/* Description */}
+          <div>
+            <label className="block text-gray-700 font-semibold mb-1">
+              Description
+            </label>
+            <textarea
+              name="description"
+              value={form.description}
+              onChange={handleChange}
+              rows="4"
+              className={`w-full px-4 py-2 rounded-lg border transition focus:outline-none focus:ring-2 focus:ring-purple-400 ${
+                errors.description ? "border-red-400" : "border-gray-300"
+              }`}
+              placeholder="Enter event description..."
+            ></textarea>
+            {errors.description && (
+              <span className="text-red-500 text-sm">{errors.description}</span>
+            )}
+          </div>
+
           {/* Image Upload */}
           <div>
             <label className="block text-gray-700 font-semibold mb-1">
@@ -226,9 +254,11 @@ const EventPostByAdmin = () => {
             )}
           </div>
         </div>
+
+        {/* Submit Button */}
         <button
           type="submit"
-          className={`w-full py-3 rounded-lg bg-gradient-to-r from-purple-500 to-pink-500 text-white font-bold text-lg shadow-lg transition-transform transform hover:scale-105 hover:shadow-2xl focus:outline-none focus:ring-2 focus:ring-purple-400 ${
+          className={`w-full py-3 rounded-lg text-white font-bold text-lg shadow-lg transition-transform transform hover:scale-105 focus:outline-none focus:ring-2 focus:ring-purple-400 ${
             loading
               ? "bg-gray-400 cursor-not-allowed"
               : "bg-gradient-to-r from-purple-500 to-pink-500 hover:scale-105 hover:shadow-2xl"
@@ -263,14 +293,15 @@ const EventPostByAdmin = () => {
           )}
         </button>
       </form>
+
       {/* Animation keyframes */}
       <style>
         {`
-                    @keyframes fade-in {
-                        from { opacity: 0; transform: translateY(30px);}
-                        to { opacity: 1; transform: translateY(0);}
-                    }
-                `}
+          @keyframes fade-in {
+            from { opacity: 0; transform: translateY(30px);}
+            to { opacity: 1; transform: translateY(0);}
+          }
+        `}
       </style>
     </div>
   );

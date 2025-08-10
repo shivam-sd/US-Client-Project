@@ -27,7 +27,7 @@ const AdminAccess = () => {
 
       // console.log("Login response:", response.data);
       toast.success("Login successful!");
-      navigate("/eventpostbyadmin");
+      navigate("/admindashboard");
     } catch (error) {
       toast.error("Invalid Credentials. Please try again.");
       // console.error("Error during admin login:", error);

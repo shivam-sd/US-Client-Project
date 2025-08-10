@@ -1,10 +1,43 @@
-import React from "react";
+import React, { useState } from "react";
 import Header from "../components/Header";
 import Footer from "../components/Footer";
 import { FaLinkedin } from "react-icons/fa";
 import { FaInstagram } from "react-icons/fa6";
+import { toast } from "react-toastify";
 
 const Contact = () => {
+  const [result, setResult] = useState(null);
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    setResult("sending...");
+    
+    const formData = new FormData(e.target);
+    formData.append("access_key", "997fa1ac-8b53-47a0-a76e-aea138e5f89b");
+
+    try {
+      const response = await fetch("https://api.web3forms.com/submit", {
+        method: "POST",
+        body: formData,
+      });
+      const data = await response.json();
+
+      if (data.success) {
+        setResult("Form Submitted Successfully");
+        toast.success("Mail sent successfully!");
+        e.target.reset();
+      } else {
+        console.error("Error", data);
+        toast.error(data.message || "Something went wrong!");
+        setResult(data.message);
+      }
+    } catch (error) {
+      console.error("Submission error:", error);
+      toast.error("Network error! Please try again later.");
+      setResult("Network error");
+    }
+  };
+
   const Carddata = [
     {
       title: "Q. How can I become a member of the ICAI New York Chapter?",
@@ -25,9 +58,8 @@ const Contact = () => {
     <div className="w-full">
       <Header />
       <div className="container mx-auto px-4 py-8">
-        {/* Section First */}
+        {/* FAQ Section */}
         <div className="mt-5 flex flex-col items-center gap-10">
-          {/* Title Section */}
           <div className="text-center max-w-3xl">
             <h1 className="text-lg md:text-2xl lg:text-4xl font-bold text-gray-800">
               Frequently Asked Questions (FAQ)
@@ -40,7 +72,6 @@ const Contact = () => {
             </p>
           </div>
 
-          {/* Cards Section */}
           <div className="w-full grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
             {Carddata.map((elm, idx) => (
               <div
@@ -56,16 +87,17 @@ const Contact = () => {
           </div>
         </div>
 
-        {/* form section */}
-
+        {/* Form Section */}
         <div className="w-full px-4 py-10 flex lg:flex-row flex-col gap-16 justify-center shadow-2xl bg-gray-100 mt-5">
-          <form className="w-full max-w-3xl bg-white p-6 rounded-lg shadow-md">
+          <form
+            onSubmit={handleSubmit}
+            className="w-full max-w-3xl bg-white p-6 rounded-lg shadow-md"
+          >
             <h2 className="text-4xl font-bold text-blue-900 mb-8 text-center">
               Get in touch with us!
             </h2>
 
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
-              {/* Name */}
               <div>
                 <label className="block text-lg font-medium mb-1 text-gray-700">
                   Name
@@ -73,11 +105,11 @@ const Contact = () => {
                 <input
                   type="text"
                   placeholder="Your full name"
+                  name="name"
                   className="w-full border border-gray-300 rounded-md px-4 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
                 />
               </div>
 
-              {/* Phone */}
               <div>
                 <label className="block text-lg font-medium mb-1 text-gray-700">
                   Phone
@@ -85,25 +117,25 @@ const Contact = () => {
                 <input
                   type="text"
                   placeholder="+1 123 456 7890"
+                  name="phone"
                   className="w-full border border-gray-300 rounded-md px-4 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
                 />
               </div>
             </div>
 
-            {/* Email */}
             <div className="mb-4">
               <label className="block text-lg font-medium mb-1 text-gray-700">
                 Email <span className="text-red-500">*</span>
               </label>
               <input
                 type="email"
+                name="email"
                 placeholder="example@email.com"
                 className="w-full border border-gray-300 rounded-md px-4 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
                 required
               />
             </div>
 
-            {/* Arriving From */}
             <div className="mb-4">
               <label className="block text-lg font-medium mb-1 text-gray-700">
                 Arriving From
@@ -111,11 +143,11 @@ const Contact = () => {
               <input
                 type="text"
                 placeholder="City or place"
+                name="arriving"
                 className="w-full border border-gray-300 rounded-md px-4 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
               />
             </div>
 
-            {/* Message */}
             <div className="mb-6">
               <label className="block text-lg font-medium mb-1 text-gray-700">
                 Message
@@ -123,33 +155,32 @@ const Contact = () => {
               <textarea
                 rows="5"
                 placeholder="Your message here..."
+                name="message"
                 className="w-full border border-gray-300 rounded-md px-4 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
               ></textarea>
             </div>
 
-            {/* Submit Button */}
             <button
               type="submit"
               className="bg-blue-800 text-white px-6 py-2 rounded-md hover:bg-blue-900 transition duration-200 text-lg font-bold w-full cursor-pointer"
             >
               Send
             </button>
+            {result && <p className="mt-3 text-center text-gray-500">{result}</p>}
           </form>
 
-{/* social media */}
-
-        <div className="p-3 text-center flex items-center justify-center flex-col">
-          <p className="lg:text-4xl md:text-2xl text-2xl">Follow us on social media</p>
-          <div className="flex items-center gap-20 justify-center mt-6 text-4xl">
-            <FaLinkedin className="text-blue-500 rounded-2xl" />
-            <FaInstagram className="text-pink-600 rounded-2xl" />
+          {/* Social Media */}
+          <div className="p-3 text-center flex items-center justify-center flex-col">
+            <p className="lg:text-4xl md:text-2xl text-2xl">
+              Follow us on social media
+            </p>
+            <div className="flex items-center gap-20 justify-center mt-6 text-4xl">
+              <FaLinkedin className="text-blue-500 cursor-pointer" />
+              <FaInstagram className="text-pink-600 cursor-pointer" />
+            </div>
+            <p className="text-xl mt-4">admin@icainy.us</p>
           </div>
-          <p className="text-xl mt-4 ">admin@icainy.us</p>
         </div>
-
-        </div>
-
-        
       </div>
       <Footer />
     </div>

@@ -7,8 +7,10 @@ import Membership from "./pages/Membership";
 import Aboutus from "./pages/Aboutus";
 import Contact from "./pages/Contact";
 import EventDetails from "./pages/EventDetails";
-import AdminAccess from "./pages/AdminAccess";
-import EventPostByAdmin from './pages/EventPostByAdmin';
+import AdminAccess from "./helper/AdminAccess";
+import EventPostByAdmin from './helper/EventPostByAdmin';
+import AdminDashboard from './helper/AdminDashboard';
+import ProtectedRoute from './helper/ProtectedRoutes';
 
 
 const App = () => {
@@ -21,9 +23,10 @@ const App = () => {
         <Route path='/membership' element={<Membership />} />
         <Route path='/about-us' element={<Aboutus />} />
         <Route path='/contact' element={<Contact />} />
-        <Route path='/eventDetails' element={<EventDetails />} />
+        <Route path='/eventDetails/:id' element={<EventDetails />} />
         <Route path='/adminaccess' element={<AdminAccess />} />
-        <Route path='/eventpostbyadmin' element={<EventPostByAdmin />} />
+        <Route path='/eventpostbyadmin' element={<ProtectedRoute><EventPostByAdmin /></ProtectedRoute>} />
+        <Route path='/admindashboard' element={<ProtectedRoute><AdminDashboard /></ProtectedRoute>} />
       </Routes>
     </div>
   )
